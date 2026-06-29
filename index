@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Verdadeiro ou Falso</title>
+    <style>
+        /* Configurações Globais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #182b46;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Container do Carrossel */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        /* Container do Flashcard */
+        .flashcard {
+            background-color: transparent;
+            width: 320px;
+            height: 240px;
+            perspective: 1000px; /* Cria o efeito 3D */
+            cursor: pointer;
+            display: none; /* Esconde todos por padrão */
+        }
+
+        /* Classe ativa para mostrar apenas o card atual */
+        .flashcard.active {
+            display: block;
+        }
+
+        /* Elemento interno que vai girar */
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        /* Efeito de giro ao passar o mouse */
+        .flashcard:hover .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Estilo comum para a Frente e o Verso */
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Esconde o lado oposto */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        /* Estilo da Frente */
+        .flashcard-front {
+            background-color: #ffffff;
+            color: #333333;
+            border: 2px solid #007bff;
+        }
+
+        .flashcard-front span {
+            font-size: 12px;
+            color: #007bff;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .flashcard-front h2 {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        /* Estilo do Verso */
+        .flashcard-back {
+            background-color: #007bff;
+            color: white;
+            transform: rotateY(180deg); /* Começa virado */
+        }
+
+        .flashcard-back p {
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        /* Controles de Navegação */
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn:disabled {
+            background-color: #4a5a70;
+            cursor: not-allowed;
+        }
+
+        .counter {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <!-- Flashcard 1 -->
+        <div class="flashcard active">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 1</span>
+                    <h2>O Rio Amazonas é o mais longo do mundo.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 2</span>
+                    <h2>A Grande Muralha da China é a única estrutura feita pelo homem visível a olho nu do espaço.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 3</span>
+                    <h2>O som se propaga mais rápido na água do que no ar.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 4</span>
+                    <h2>Os elétrons são maiores do que os prótons.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 5</span>
+                    <h2>O tomate é cientificamente classificado como uma fruta.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 6 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 6</span>
+                    <h2>A Islândia possui dezenas de florestas densas espalhadas por seu território.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 7 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 7</span>
+                    <h2>O corpo humano de um adulto possui mais de 200 ossos.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 8 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 8</span>
+                    <h2>O Monte Everest é a montanha mais alta do mundo se medirmos a partir da base submarina.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 9 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 9</span>
+                    <h2>O diamante é a substância natural mais dura conhecida na Terra.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 10 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 10</span>
+                    <h2>A rotação da Terra ao redor do Sol leva exatamente 365 dias corridos.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 11 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 11</span>
+                    <h2>O oxigênio é o elemento químico mais abundante na atmosfera da Terra.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Falso</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 12 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <span>Afirmação 12</span>
+                    <h2>As abelhas podem voar mais alto do que o topo do Monte Everest.</h2>
+                </div>
+                <div class="flashcard-back">
+                    <p>Verdadeiro</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls">
+            <button class="btn" id="prevBtn" disabled>Anterior</button>
+            <span class="counter" id="counter">1 / 12</span>
+            <button class="btn" id="nextBtn">Próximo</button>
+        </div>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.flashcard');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const counter = document.getElementById('counter');
