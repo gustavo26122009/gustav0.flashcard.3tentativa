@@ -3,320 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards Verdadeiro ou Falso</title>
+    <title>Flash Card - Verdadeiro ou Falso</title>
     <style>
-        /* Configurações Globais */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #182b46;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        * {
             margin: 0;
-            gap: 20px;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
 
-        /* Container do Carrossel */
-        .quiz-container {
+        body {
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
+            justify-content: center;
         }
 
-        /* Container do Flashcard */
-        .flashcard {
-            background-color: transparent;
-            width: 320px;
-            height: 240px;
-            perspective: 1000px; /* Cria o efeito 3D */
-            cursor: pointer;
-            display: none; /* Esconde todos por padrão */
+        /* Cabeçalho com o nome */
+        .header-msg {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
         }
 
-        /* Classe ativa para mostrar apenas o card atual */
-        .flashcard.active {
-            display: block;
+        /* Estrutura do Flash Card */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 350px;
+            height: 280px; /* Aumentado levemente para caber os textos maiores */
+            margin-bottom: auto;
         }
 
-        /* Elemento interno que vai girar */
-        .flashcard-inner {
-            position: relative;
+        .card {
             width: 100%;
             height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
+            transition: transform 0.6s ease;
             transform-style: preserve-3d;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
         }
 
-        /* Efeito de giro ao passar o mouse */
-        .flashcard:hover .flashcard-inner {
+        .card.is-flipped {
             transform: rotateY(180deg);
         }
 
-        /* Estilo comum para a Frente e o Verso */
-        .flashcard-front, .flashcard-back {
-            position: absolute;
+        .card-front, .card-back {
+            backface-visibility: hidden;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* Esconde o lado oposto */
+            position: absolute;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            padding: 20px;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            padding: 24px;
-            box-sizing: border-box;
         }
 
-        /* Estilo da Frente */
-        .flashcard-front {
+        .card-front {
             background-color: #ffffff;
-            color: #333333;
-            border: 2px solid #007bff;
         }
 
-        .flashcard-front span {
-            font-size: 12px;
-            color: #007bff;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-        }
-
-        .flashcard-front h2 {
-            margin: 0;
-            font-size: 18px;
-            line-height: 1.5;
-            font-weight: 600;
-        }
-
-        /* Estilo do Verso */
-        .flashcard-back {
-            background-color: #007bff;
+        .card-back {
+            background-color: #2c3e50;
             color: white;
-            transform: rotateY(180deg); /* Começa virado */
+            transform: rotateY(180deg);
         }
 
-        .flashcard-back p {
-            font-size: 26px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
+        .question {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.4;
         }
 
-        /* Controles de Navegação */
-        .controls {
+        .instruction {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 15px;
+        }
+
+        /* Botões de V ou F */
+        .btn-container {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 20px;
         }
 
         .btn {
-            background-color: #007bff;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-true {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-true:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-false {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-false:hover {
+            background-color: #c0392b;
+        }
+
+        .result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn-next {
+            padding: 10px 20px;
+            background-color: #3498db;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            font-size: 1rem;
         }
 
-        .btn:hover {
-            background-color: #0056b3;
+        .btn-next:hover {
+            background-color: #2980b9;
         }
 
-        .btn:disabled {
-            background-color: #4a5a70;
-            cursor: not-allowed;
-        }
-
-        .counter {
+        /* Rodapé */
+        footer {
+            margin-top: auto;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            background-color: #222;
             color: white;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="quiz-container">
-        <!-- Flashcard 1 -->
-        <div class="flashcard active">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 1</span>
-                    <h2>O Rio Amazonas é o mais longo do mundo.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
-            </div>
-        </div>
+    <!-- Mensagem flutuante de boas-vindas -->
+    <div id="mensagemBoasVindas" class="header-msg">
+        Site criado por Gustavo de Moura do 2º B
+    </div>
 
-        <!-- Flashcard 2 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 2</span>
-                    <h2>A Grande Muralha da China é a única estrutura feita pelo homem visível a olho nu do espaço.</h2>
+    <!-- Flash Card -->
+    <div class="flashcard-container">
+        <div class="card" id="meuCard" onclick="virarCard()">
+            <!-- Lado da Pergunta -->
+            <div class="card-front">
+                <div class="question" id="perguntaTexto">
+                    Carregar pergunta...
                 </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
+                <div class="btn-container">
+                    <button class="btn btn-true" onclick="verificarResposta(true, event)">Verdadeiro</button>
+                    <button class="btn btn-false" onclick="verificarResposta(false, event)">Falso</button>
                 </div>
+                <div class="instruction">Clique no card se quiser ver a resposta direto</div>
             </div>
-        </div>
-
-        <!-- Flashcard 3 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 3</span>
-                    <h2>O som se propaga mais rápido na água do que no ar.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
+            
+            <!-- Lado da Resposta -->
+            <div class="card-back">
+                <div class="result" id="resultadoTexto">Resultado</div>
+                <button class="btn-next" onclick="proximaPergunta(event)">Próxima Pergunta</button>
             </div>
-        </div>
-
-        <!-- Flashcard 4 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 4</span>
-                    <h2>Os elétrons são maiores do que os prótons.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 5 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 5</span>
-                    <h2>O tomate é cientificamente classificado como uma fruta.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 6 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 6</span>
-                    <h2>A Islândia possui dezenas de florestas densas espalhadas por seu território.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 7 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 7</span>
-                    <h2>O corpo humano de um adulto possui mais de 200 ossos.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 8 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 8</span>
-                    <h2>O Monte Everest é a montanha mais alta do mundo se medirmos a partir da base submarina.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 9 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 9</span>
-                    <h2>O diamante é a substância natural mais dura conhecida na Terra.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 10 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 10</span>
-                    <h2>A rotação da Terra ao redor do Sol leva exatamente 365 dias corridos.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 11 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 11</span>
-                    <h2>O oxigênio é o elemento químico mais abundante na atmosfera da Terra.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Falso</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard 12 -->
-        <div class="flashcard">
-            <div class="flashcard-inner">
-                <div class="flashcard-front">
-                    <span>Afirmação 12</span>
-                    <h2>As abelhas podem voar mais alto do que o topo do Monte Everest.</h2>
-                </div>
-                <div class="flashcard-back">
-                    <p>Verdadeiro</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Controles -->
-        <div class="controls">
-            <button class="btn" id="prevBtn" disabled>Anterior</button>
-            <span class="counter" id="counter">1 / 12</span>
-            <button class="btn" id="nextBtn">Próximo</button>
         </div>
     </div>
 
+    <!-- Rodapé -->
+    <footer>
+        Desenvolvido com dedicação por Gustavo de Moura - 2º B
+    </footer>
+
     <script>
-        const cards = document.querySelectorAll('.flashcard');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const counter = document.getElementById('counter');
+        // Banco de dados com 3 verdadeiras e 3 falsas alternadas
+        const perguntas = [
+            // --- VERDADEIRAS ---
+            { 
+                texto: "A Lua é o único satélite natural da Terra?", 
+                resposta: true, 
+                explicacao: "Verdadeiro! Ela orbita nosso planeta há bilhões de anos." 
+            },
+            { 
+                texto: "A água ferve a 100°C ao nível do mar?", 
+                resposta: true, 
+                explicacao: "Verdadeiro! Essa é a temperatura padrão de ebulição da água nessa altitude." 
+            },
+            { 
+                texto: "O oxigênio é o elemento essencial para a nossa respiração?", 
+                resposta: true, 
+                explicacao: "Verdadeiro! Nossas células precisam dele para produzir energia." 
+            },
+            
+            // --- FALSAS ---
+            { 
+                texto: "O Sol gira ao redor da Terra?", 
+                resposta: false, 
+                explicacao: "Falso! É a Terra (e outros planetas) que gira ao redor do Sol." 
+            },
+            { 
+                texto: "Os humanos têm três pulmões no corpo?", 
+                resposta: false, 
+                explicacao: "Falso! Nós temos apenas dois pulmões (o esquerdo e o direito)." 
+            },
+            { 
+                texto: "O Brasil é o maior país do mundo em território?", 
+                resposta: false, 
+                explicacao: "Falso! O maior país do mundo em extensão territorial é a Rússia." 
+            }
+        ];
+
+        let perguntaAtual = 0;
+
+        // Inicia a primeira pergunta ao abrir a página
+        window.onload = function() {
+            carregarPergunta();
+        };
+
+        function carregarPergunta() {
+            document.getElementById("perguntaTexto").innerText = perguntas[perguntaAtual].texto;
+        }
+
+        function virarCard() {
+            const card = document.getElementById("meuCard");
+            card.classList.toggle("is-flipped");
+        }
+
+        function verificarResposta(escolha, event) {
+            event.stopPropagation(); // Impede o clique de virar o card duas vezes
+
+            const correta = perguntas[perguntaAtual].resposta;
+            const resultadoTexto = document.getElementById("resultadoTexto");
+
+            if (escolha === correta) {
+                resultadoTexto.innerHTML = "<span style='color: #2ecc71;'>Correto!</span><br><br>" + perguntas[perguntaAtual].explicacao;
+            } else {
+                resultadoTexto.innerHTML = "<span style='color: #e74c3c;'>Incorreto!</span><br><br>" + perguntas[perguntaAtual].explicacao;
+            }
+
+            const card = document.getElementById("meuCard");
+            card.classList.add("is-flipped");
+        }
+
+        function proximaPergunta(event) {
+            event.stopPropagation(); 
+            
+            perguntaAtual++;
+            if (perguntaAtual >= perguntas.length) {
+                perguntaAtual = 0; // Reinicia a lista quando chega ao fim
+            }
+
+            const card = document.getElementById("meuCard");
+            card.classList.remove("is-flipped");
+
+            setTimeout(carregarPergunta, 300);
+        }
+    </script>
+</body>
+</html>
